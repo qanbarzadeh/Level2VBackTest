@@ -5,44 +5,20 @@ A utility module for visualizing Level 2 order book data. This module
 provides several plotting functions to help analyze key metrics such
 as bid-ask spread, order flow imbalance, liquidity distribution, and
 overall price trends.
-
-Example Usage:
-    from utils.data_loader import DataLoader
-    from utils.data_visualizer import (
-        plot_bid_ask_spread,
-        plot_order_flow_imbalance,
-        plot_liquidity_heatmap,
-        plot_price_trends,
-        plot_volume_concentration
-    )
-
-    if __name__ == '__main__':
-        loader = DataLoader()
-        df = loader.load_csv('data/processed/back-test-480_cleaned.csv')
-        plot_bid_ask_spread(df)
-        plot_order_flow_imbalance(df, levels=10)
-        plot_liquidity_heatmap(df)
-        plot_price_trends(df)
-        plot_volume_concentration(df)
 """
-import sys
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 from typing import Optional
-# Instead of: from utils.data_loader import DataLoader
 from src.utils.data_loader import DataLoader
 
-
-
-
-
-# Add the project root directory to sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 # Ensure the results directory for visualizations exists
 RESULTS_DIR = os.path.join("results", "visualizations")
-os.makedirs(RESULTS_DIR, exist_ok=True)
+try:
+    os.makedirs(RESULTS_DIR, exist_ok=True)
+except OSError as e:
+    print(f"Error creating directory {RESULTS_DIR}: {e}")
 
 
 def plot_bid_ask_spread(data: pd.DataFrame) -> None:
@@ -113,10 +89,6 @@ def plot_liquidity_heatmap(data: pd.DataFrame) -> None:
     """
     Create and save a heatmap of bid/ask volumes across all levels over time.
 
-    This example plots total volume at each level (bid and ask together).
-    For more detailed analysis, you could create separate heatmaps for bids
-    and asks or split them into subplots.
-
     Args:
         data (pd.DataFrame): The loaded Level 2 data as a pandas DataFrame.
     """
@@ -125,39 +97,22 @@ def plot_liquidity_heatmap(data: pd.DataFrame) -> None:
     ask_size_cols = [col for col in data.columns if col.startswith("ask_size_")]
 
     # Combine bid/ask volumes in a single DataFrame for heatmap
-    # We'll create a "long" format DataFrame: (timestamp, level, side, volume)
     heatmap_data = []
 
     for col in bid_size_cols:
-        level_str = col.split("_")[-1]  # e.g., bid_size_3 -> '3'
+        level_str = col.split("_")[-1]
         for idx, row in data.iterrows():
-            heatmap_data.append([
-                row['timestamp'],
-                f"Bid_{level_str}",
-                row[col]
-            ])
+            heatmap_data.append([row['timestamp'], f"Bid_{level_str}", row[col]])
 
     for col in ask_size_cols:
         level_str = col.split("_")[-1]
         for idx, row in data.iterrows():
-            heatmap_data.append([
-                row['timestamp'],
-                f"Ask_{level_str}",
-                row[col]
-            ])
+            heatmap_data.append([row['timestamp'], f"Ask_{level_str}", row[col]])
 
-    # Convert to DataFrame
     heatmap_df = pd.DataFrame(heatmap_data, columns=['timestamp', 'level', 'volume'])
-
-    # We need a pivot for a 2D heatmap: index=level, columns=timestamp, values=volume
-    # But it's often more intuitive to have time on the index for line-based heatmaps.
-    # For a large dataset, too many timestamps can be visually cluttered.
-    # We'll show a simplified approach.
-
     pivot_df = heatmap_df.pivot(index='level', columns='timestamp', values='volume')
 
     plt.figure(figsize=(14, 8))
-    # We use a log scale for color to handle large volume differences more gracefully
     sns.heatmap(pivot_df, cmap="viridis", norm=None)
     plt.title("Liquidity Heatmap (Bid & Ask Volumes Across Levels)")
     plt.xlabel("Timestamp")
@@ -173,13 +128,11 @@ def plot_liquidity_heatmap(data: pd.DataFrame) -> None:
 
 def plot_price_trends(data: pd.DataFrame) -> None:
     """
-    Plot the last_trade_price over time, and overlay with average bid/ask prices
-    (averaged across all levels).
+    Plot the last_trade_price over time, and overlay with average bid/ask prices.
 
     Args:
         data (pd.DataFrame): The loaded Level 2 data as a pandas DataFrame.
     """
-    # Identify all bid_price_x and ask_price_x columns
     bid_price_cols = [col for col in data.columns if col.startswith("bid_price_")]
     ask_price_cols = [col for col in data.columns if col.startswith("ask_price_")]
 
@@ -210,7 +163,6 @@ def plot_volume_concentration(data: pd.DataFrame) -> None:
     Args:
         data (pd.DataFrame): The loaded Level 2 data as a pandas DataFrame.
     """
-    # Identify all bid_size_x and ask_size_x columns
     bid_size_cols = [col for col in data.columns if col.startswith("bid_size_")]
     ask_size_cols = [col for col in data.columns if col.startswith("ask_size_")]
 
@@ -238,10 +190,7 @@ if __name__ == '__main__':
     Demonstration script for data visualization. Assumes that DataLoader
     and a sample CSV file are available in your environment.
     """
-    from utils.data_loader import DataLoader
-
-    # Load sample data
-    loader = DataLoader()  # Default: 24 levels
+    loader = DataLoader()
     sample_csv_path = 'data/processed/back-test-480_cleaned.csv'
 
     try:
