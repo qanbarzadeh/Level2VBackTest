@@ -298,7 +298,7 @@ def plot_price_trend(data: pd.DataFrame) -> None:
 # ----------------------------------------------------------------------
 if __name__ == '__main__':
     # Example usage
-    sample_csv_path = 'data/processed/BITSTAMP_SPOT_BTC_USD_2025-01-11_08-27-12.csv'
+    sample_csv_path = 'data/processed/back-test-480_cleaned_no_duplicates.csv'
     if not os.path.exists(sample_csv_path):
         logging.error(f"Sample file does not exist: {sample_csv_path}")
     else:
