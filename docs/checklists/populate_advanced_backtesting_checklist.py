@@ -1,7 +1,10 @@
 import os
 import pandas as pd
+from openpyxl import load_workbook
+from openpyxl.utils import get_column_letter
+from openpyxl.styles import PatternFill
 
-# Checklist data
+# Checklist data: This dictionary contains all the relevant information for the checklist.
 checklist_data = {
     "Category": [
         "Event-Driven Architecture", "Event-Driven Architecture", "Event-Driven Architecture",
@@ -54,14 +57,41 @@ checklist_data = {
     ]
 }
 
-# Define file path
-output_dir = "F:/Developer/TradingRobot/Nobitex/Level2VBackTest/docs/checklists"
-output_file = "advanced_backtesting_checklist.xlsx"
-os.makedirs(output_dir, exist_ok=True)
-file_path = os.path.join(output_dir, output_file)
+# Define file paths: Specify the directory and file name for saving the checklist.
+output_dir = "./docs/checklists"  # Directory to save the file
+output_file = "advanced_backtesting_checklist.xlsx"  # File name for the checklist
+os.makedirs(output_dir, exist_ok=True)  # Create the directory if it doesn't exist
+file_path = os.path.join(output_dir, output_file)  # Full path to the file
 
-# Write checklist to Excel
-df = pd.DataFrame(checklist_data)
+# Create DataFrame: Convert the checklist data into a pandas DataFrame for easier processing.
+checklist_df = pd.DataFrame(checklist_data)
+
+# Save to Excel with auto-adjusted column widths and color-coding
 with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
-    df.to_excel(writer, index=False, sheet_name="Checklist")
-    print(f"Checklist generated successfully at {file_path}")
+    # Write the DataFrame to an Excel file
+    checklist_df.to_excel(writer, index=False, sheet_name='Checklist')
+    worksheet = writer.sheets['Checklist']  # Access the worksheet for further formatting
+    
+    # Define category colors: Assign colors to each category for better visualization.
+    category_colors = {
+        "Event-Driven Architecture": "B4C7E7",  # Light Blue
+        "Data Handling": "A9D08E",  # Light Green
+        "Order Matching Engine": "FFE699",  # Light Yellow
+        "Scalability": "F4B084",  # Light Orange
+        "Validation and Statistical Significance": "FABF8F"  # Peach
+    }
+
+    # Apply colors: Fill each row with its category-specific color.
+    for row_idx, category in enumerate(checklist_df['Category'], start=2):
+        fill_color = category_colors.get(category, "FFFFFF")  # Default to white if category not found
+        for col_idx in range(1, len(checklist_df.columns) + 1):
+            worksheet.cell(row=row_idx, column=col_idx).fill = PatternFill(start_color=fill_color, end_color=fill_color, fill_type="solid")
+
+    # Adjust column widths: Automatically size columns based on their content for better readability.
+    for col_num, column in enumerate(checklist_df.columns, 1):
+        col_letter = get_column_letter(col_num)  # Get the column letter (e.g., A, B, C)
+        max_length = max(checklist_df[column].astype(str).apply(len).max(), len(column)) + 2  # Calculate max content width
+        worksheet.column_dimensions[col_letter].width = max_length  # Set column width
+
+# Notify user: Indicate that the file has been successfully created and saved.
+print(f"Checklist successfully updated with enhanced readability and saved to {file_path}")
