@@ -4,7 +4,7 @@ from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import PatternFill
 
-# Checklist data: This dictionary contains all the relevant information for the checklist.
+# Checklist data
 checklist_data = {
     "Category": [
         "Event-Driven Architecture", "Event-Driven Architecture", "Event-Driven Architecture",
@@ -57,13 +57,12 @@ checklist_data = {
     ]
 }
 
-# Define file paths: Specify the directory and file name for saving the checklist.
-output_dir = "./docs/checklists"  # Directory to save the file
+# Define file paths: Ensure correct directory handling
+current_dir = os.getcwd()  # Get the current working directory
 output_file = "advanced_backtesting_checklist.xlsx"  # File name for the checklist
-os.makedirs(output_dir, exist_ok=True)  # Create the directory if it doesn't exist
-file_path = os.path.join(output_dir, output_file)  # Full path to the file
+file_path = os.path.join(current_dir, output_file)  # Create file path in the current directory
 
-# Create DataFrame: Convert the checklist data into a pandas DataFrame for easier processing.
+# Create DataFrame: Convert the checklist data into a pandas DataFrame
 checklist_df = pd.DataFrame(checklist_data)
 
 # Save to Excel with auto-adjusted column widths and color-coding
