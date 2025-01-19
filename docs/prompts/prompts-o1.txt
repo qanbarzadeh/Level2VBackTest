@@ -1,0 +1,66 @@
+Below is an expert-level engineering prompt to maximize the capabilities of the GPT o-1 model in analyzing your backtest dataset and formalizing the design document for the backtesting module:
+
+---
+
+**Expert Engineering Task:**
+
+You are tasked with analyzing and interpreting the provided backtest dataset, which is structured as Level 2 order book data containing historical bid/ask prices and sizes across 24 levels, along with timestamps, symbols, and last trade prices. This dataset will be used to design a robust and scalable backtesting module for an algorithmic trading system. Your analysis will directly influence the architecture, design, and functionality of the backtesting system.
+
+### Dataset Overview:
+The dataset is structured as follows (sample rows provided below):
+
+| Timestamp                     | Symbol  | Bid_Price_1 | Bid_Size_1 | Ask_Price_1 | Ask_Size_1 | ... | Bid_Price_24 | Bid_Size_24 | Ask_Price_24 | Ask_Size_24 | Last_Trade_Price |
+|-------------------------------|---------|-------------|------------|-------------|------------|-----|--------------|-------------|--------------|-------------|------------------|
+| 2024-12-22T21:01:42.488517+00:00 | BTCUSDT | 94720.01    | 5.50E-05   | 94725.06    | 0.011024   | ... | 93900        | 7.00E-05    | 95800        | 0.057065    | 94725.06         |
+
+### Key Considerations:
+1. **Complexity and Scale**:
+   - Analyze the dataset's structure to identify essential fields, patterns, and relationships required for effective backtesting.
+   - Evaluate the scalability of the dataset for high-frequency tick-by-tick backtesting.
+
+2. **Data Characteristics**:
+   - Ensure that edge cases such as missing data, anomalies, and outliers are identified and planned for.
+   - Highlight specific areas where preprocessing will be needed for the backtesting module to avoid runtime issues.
+
+3. **Backtesting Requirements**:
+   - Define how this data can be processed for backtesting (e.g., generating signals, simulating execution).
+   - Consider challenges related to slippage, order matching, and price-time priority simulation.
+
+4. **Storage and Real-Time Access**:
+   - Propose optimized data storage structures (e.g., Parquet, HDF5) for historical data while maintaining efficient access for backtesting.
+   - Recommend data access patterns for scalability in large-scale datasets.
+
+### Deliverables:
+1. **Dataset Analysis**:
+   - Provide an exhaustive analysis of the dataset, including:
+     - Key columns and their roles in backtesting.
+     - Dependencies or relationships between fields.
+     - Identification of gaps, anomalies, or potential errors in the dataset.
+
+2. **Design Proposals**:
+   - Draft a high-level architecture of the backtesting module based on the dataset analysis, including:
+     - Preprocessing pipelines.
+     - Order-matching engine requirements.
+     - Scalability and performance optimization techniques.
+   - Specify the role of this dataset in simulation (e.g., generating synthetic trades, order flow analysis).
+
+3. **Validation Plan**:
+   - Propose methods for validating the integrity and correctness of the data when used in the backtesting system.
+   - Suggest statistical tests or quality checks to ensure accurate performance.
+
+### Dataset for Analysis:
+Attach the provided dataset directly or parse the following sample rows to infer insights:
+```
+	symbol	bid_price_1	bid_size_1	ask_price_1		bid_price_2	bid_size_2	ask_price_2	ask_size_2	bid_price_3	bid_size_3	ask_price_3	ask_size_3	bid_price_4	bid_size_4	ask_price_4	ask_size_4	bid_price_5	bid_size_5	ask_price_5	ask_size_5	bid_price_6	bid_size_6	ask_price_6	ask_size_6	bid_price_7	bid_size_7	ask_price_7	ask_size_7	bid_price_8	bid_size_8	ask_price_8	ask_size_8	bid_price_9	bid_size_9	ask_price_9	ask_size_9	bid_price_10	bid_size_10	ask_price_10	ask_size_10	bid_price_11	bid_size_11	ask_price_11	ask_size_11	bid_price_12	bid_size_12	ask_price_12	ask_size_12	bid_price_13	bid_size_13	ask_price_13	ask_size_13	bid_price_14	bid_size_14	ask_price_14	ask_size_14	bid_price_15	bid_size_15	ask_price_15	ask_size_15	bid_price_16	bid_size_16	ask_price_16	ask_size_16	bid_price_17	bid_size_17	ask_price_17	ask_size_17	bid_price_18	bid_size_18	ask_price_18	ask_size_18	bid_price_19	bid_size_19	ask_price_19	ask_size_19	bid_price_20	bid_size_20	ask_price_20	ask_size_20	bid_price_21	bid_size_21	ask_price_21	ask_size_21	bid_price_22	bid_size_22	ask_price_22	ask_size_22	bid_price_23	bid_size_23	ask_price_23	ask_size_23	bid_price_24	bid_size_24	ask_price_24	ask_size_24	last_trade_price
+2024-12-22T21:01:42.488517+00:00	BTCUSDT	94720.01	5.50E-05	94725.06	0.011024	94720	0.004953	94990	0.008484	94700.01	0.114835	94991.99	0.00044	94700	0.109844	94999.87	0.000315	94675	0.000475	94999.93	0.000315	94600	0.006271	95000	0.007477	94577.12	0.000585	95001	3.90E-05	94577	0.001554	95004	0.00074	94574.17	0.000853	95150	0.000353	94512.44	0.00835	95256	0.000526	94512.43	0.031424	95289.92	0.001115	94500	0.000582	95299.96	0.004162	94400	0.0004	95300	0.004163	94320	0.002813	95345	0.00033	94288	0.00414	95400	0.001239	94250	0.002533	95494.99	0.16	94200	0.001203	95495	0.000108	94100	0.0608	95500	0.0051	94000	0.009634	95600	0.00108	93931.11	0.002267	95619.99	0.00742	93911	0.000116	95633.44	0.031417	93909	6.50E-05	95719	0.004103	93902.9	0.024696	95760	5.30E-05	93900	7.00E-05	95800	0.057065	94725.06
+2024-12-22T21:01:43.369501+00:00	BTCUSDT	94720.01	5.50E-05	94725.06	0.011024	94720	0.004953	94990	0.008484	94700.01	0.114835	94991.99	0.00044	94700	0.109844	94999.87	0.000315	94675	0.000475	94999.93	0.000315	94600	0.006271	95000	0.007477	94577.12	0.000585	95001	3.90E-05	94577	0.001554	95004	0.00074	94574.17	0.000853	95150	0.000353	94512.44	0.00835	95256	0.000526	94512.43	0.031424	95289.92	0.001115	94500	0.000582	95299.96	0.004162	94400	0.0004	95300	0.004163	94320	0.002813	95345	0.00033	94288	0.00414	95400	0.001239	94250	0.002533	95495	0.000108	94200	0.001203	95500	0.0051	94100	0.0608	95600	0.00108	94000	0.009634	95619.99	0.00742	93931.11	0.002267	95633.44	0.031417	93911	0.000116	95719	0.004103	93909	6.50E-05	95760	5.30E-05	93902.9	0.024696	95800	0.057065	93900	7.00E-05	95847.83	0.000356	94720.01
+2024-12-22T21:01:44.266160+00:00	BTCUSDT	94720.01	5.50E-05	94725.06	0.011024	94720	0.004953	94990	0.008484	94700.01	0.114835	94991.99	0.00044	94700	0.109844	94999.87	0.000315	94675	0.000475	94999.93	0.000315	94600	0.006271	95000	0.007477	94577.12	0.000585	95001	3.90E-05	94577	0.001554	95004	0.00074	94574.17	0.000853	95150	0.000353	94512.44	0.00835	95256	0.000526	94512.43	0.031424	95289.92	0.001115	94500	0.000582	95299.96	0.004162	94400	0.0004	95300	0.004163	94320	0.002813	95345	0.00033	94288	0.00414	95400	0.001239	94250	0.002533	95495	0.000108	94200	0.001203	95500	0.0051	94100	0.000399	95600	0.00108	94000	0.009634	95619.99	0.00742	93931.11	0.002267	95633.44	0.031417	93911	0.000116	95719	0.004103	93909	6.50E-05	95760	5.30E-05	93902.9	0.024696	95800	0.057065	93900	7.00E-05	95847.83	0.000356	94720.01
+
+```
+
+### Expectations:
+- Use domain expertise in financial markets, algorithmic trading, and quantitative development to infer insights.
+- Highlight any potential limitations or risks associated with using this dataset.
+- Ensure that the output is detailed, structured, and actionable for immediate implementation.
+
+---
